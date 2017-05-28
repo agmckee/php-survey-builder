@@ -31,7 +31,7 @@
     <div id="site_content">
       <h1>Runtime Error</h1>
       <div id="content">
-        <div id="error_dialog" title="Error" style="display: none">
+        <div id="error_dialog" title="Error">
           <p id="statusMessage" class="error"><?php echo nl2br(htmlspecialchars($statusMessage)); ?></p>
         </div>
       </div>
