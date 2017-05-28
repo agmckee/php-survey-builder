@@ -1,7 +1,7 @@
 <?php
 
 // Set include path to look for classes in the models directory, then in the controllers directory
-set_include_path(get_include_path() . PATH_SEPARATOR . 'models' . PATH_SEPARATOR . 'controllers');
+set_include_path(get_include_path() . PATH_SEPARATOR . '../application/models' . PATH_SEPARATOR . '../application/controllers');
 
 // Register the autoload function to automatically include classes
 spl_autoload_register(array('Controller', 'autoload'));
@@ -15,20 +15,31 @@ spl_autoload_register(array('Controller', 'autoload'));
  */
 abstract class Controller
 {
-    const DSN_CONFIG_FILE = 'config/Database.ini';
-    const DATABASE_SCHEMA_FILE = 'data/schema.sql';
-    const INITIAL_DATA_FILE = 'data/initial_data.sql';
+    protected $application_directory;
+    protected $dsn_config_file;
+    protected $database_schema_file;
+    protected $initial_data_file;
     const SESSION_NAME = 'SURVEYFORMAPP';
-    const RUNTIME_EXCEPTION_VIEW = 'runtime_exception.php';
+    protected $runtime_exception_view = 'runtime_exception.php';
 
     protected $config;
     protected $dsn;
     protected $pdo;
     protected $viewVariables = array();
 
+    public function __construct()
+    {
+      $this->application_directory = dirname(dirname(__FILE__));
+      $this->dsn_config_file = $this->application_directory . DIRECTORY_SEPARATOR . 'config/Database.ini';
+      $this->database_schema_file = $this->application_directory .  DIRECTORY_SEPARATOR . 'data/schema.sql';
+      $this->initial_data_file = $this->application_directory .  DIRECTORY_SEPARATOR . 'data/initial_data.sql';
+    }
+
+
+
     /**
      * Get the filename of the view file containing HTML and PHP presentation logic
-     * 
+     *
      * @return string returns the view filename
      */
     protected function getViewFilename()
@@ -69,7 +80,7 @@ abstract class Controller
      */
     protected function displayView($viewFilename)
     {
-        chdir('views');
+        chdir('../application/views');
 
         if (! file_exists($viewFilename))
             throw new RuntimeException("Filename does not exist: $viewFilename");
@@ -120,7 +131,7 @@ abstract class Controller
         catch (RuntimeException $e)
         {
             $this->assign('statusMessage', $e->getMessage());
-            $this->displayView(self::RUNTIME_EXCEPTION_VIEW);
+            $this->displayView($this->runtime_exception_view);
         }
         catch (Exception $e)
         {
@@ -139,7 +150,7 @@ abstract class Controller
     }
 
     /**
-     * Start a new session with the session name defined in the 
+     * Start a new session with the session name defined in the
      * SESSION_NAME class constant
      */
     protected function startSession()
@@ -217,15 +228,15 @@ abstract class Controller
      */
     protected function openDatabase()
     {
-        if (! file_exists(self::DSN_CONFIG_FILE))
-            throw new RuntimeException('Database config file not found: ' . self::DSN_CONFIG_FILE);
+        if (! file_exists($this->dsn_config_file))
+            throw new RuntimeException('Database config file not found: ' . $this->dsn_config_file);
 
-        $databaseConfig = parse_ini_file(self::DSN_CONFIG_FILE);
+        $databaseConfig = parse_ini_file($this->dsn_config_file);
         if (!isset($databaseConfig['dsn']))
-            throw new RuntimeException("Database config parameter 'dsn' not found in config file: " . self::DSN_CONFIG_FILE);
+            throw new RuntimeException("Database config parameter 'dsn' not found in config file: " . $this->dsn_config_file);
 
         if (!isset($databaseConfig['filename']))
-            throw new RuntimeException("Database config parameter 'filename' not found in config file: " . self::DSN_CONFIG_FILE);
+            throw new RuntimeException("Database config parameter 'filename' not found in config file: " . $this->dsn_config_file);
 
         if (!is_writable(dirname($databaseConfig['filename'])))
             throw new RuntimeException('Data directory not writable by web server: ' . dirname($databaseConfig['filename']) . '/');
@@ -253,15 +264,15 @@ abstract class Controller
      */
     protected function createDatabaseTables()
     {
-        if (! file_exists(self::DATABASE_SCHEMA_FILE))
-            throw new RuntimeException("Database schema file not found: " . self::DATABASE_SCHEMA_FILE);
+        if (! file_exists($this->database_schema_file))
+            throw new RuntimeException("Database schema file not found: " . $this->database_schema_file);
 
         // Create tables
-        $sql = file_get_contents(self::DATABASE_SCHEMA_FILE);
+        $sql = file_get_contents($this->database_schema_file);
         $this->pdo->exec($sql);
 
         // Load initial data
-        $sql = file_get_contents(self::INITIAL_DATA_FILE);
+        $sql = file_get_contents($this->initial_data_file);
         $this->pdo->exec($sql);
     }
 
