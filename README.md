@@ -10,4 +10,4 @@ The default login is 'root@localhost' with a password of '12345'. You can add an
 
 ## Troubleshooting
 
-Be sure that your data/ directory is writable by your web server.
+Be sure that your application/data/ directory is writable by your web server.
