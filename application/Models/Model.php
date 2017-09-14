@@ -1,4 +1,6 @@
-<?php
+<?php namespace PHPSurveyBuilder\Models;
+
+use PDO;
 
 /**
  * The Model is an abstract class used to represent a database table. The Model class
@@ -36,7 +38,7 @@ abstract class Model
      */
     public static function getTable()
     {
-        return self::decamelize(get_called_class());
+        return self::decamelize(static::class);
     }
 
     /**

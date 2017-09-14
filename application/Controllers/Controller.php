@@ -1,10 +1,11 @@
-<?php
+<?php namespace PHPSurveyBuilder\Controllers;
+
+use SQLite3;
+use PDO;
+use Exception;
 
 // Set include path to look for classes in the models directory, then in the controllers directory
 set_include_path(get_include_path() . PATH_SEPARATOR . '../application/models' . PATH_SEPARATOR . '../application/controllers');
-
-// Register the autoload function to automatically include classes
-spl_autoload_register(array('Controller', 'autoload'));
 
 /**
  * The Controller class is an abstract class used to handle user requests and make use of various
@@ -90,17 +91,6 @@ abstract class Controller
 
         // Display the view
         require $viewFilename;
-    }
-
-    /**
-     * Automatically load the necessary file for a given class
-     *
-     * @param string $class the class name to autoload
-     */
-    public static function autoload($class)
-    {
-        require $class . '.php';
-        return true;
     }
 
     /**

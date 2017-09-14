@@ -1,4 +1,4 @@
-<?php
+<?php namespace PHPSurveyBuilder\Controllers;
 
 /**
  * The IndexController class is a Controller that shows the home page

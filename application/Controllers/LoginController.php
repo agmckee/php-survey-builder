@@ -1,4 +1,7 @@
-<?php
+<?php namespace PHPSurveyBuilder\Controllers;
+
+use PHPSurveyBuilder\Models\Login;
+use Exception;
 
 /**
  * The LoginController class is a Controller that allows a user to login

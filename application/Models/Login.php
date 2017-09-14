@@ -1,4 +1,6 @@
-<?php
+<?php namespace PHPSurveyBuilder\Models;
+
+use PDO;
 
 /**
  * The Login class is a Model representing the login table, used to store login information
@@ -20,6 +22,8 @@ class Login extends Model
         'first_name',
         'last_name',
     );
+
+    protected $table = 'login';
 
     /**
      * Query the database for an email using a case-insensitive lookup
@@ -60,6 +64,16 @@ class Login extends Model
             return true;
         else
             return false;
+    }
+
+    /**
+     * @return string
+     * {@inheritDoc}
+     * @see \PHPSurveyBuilder\Models\Model::getTable()
+     */
+    public function getTable()
+    {
+        return $this->table;
     }
 }
 
